@@ -19,6 +19,10 @@
           <label class="block text-sm font-bold text-slate-700 mb-1.5">Password</label>
           <input v-model="password" type="password" required class="input" placeholder="Min 8 characters">
         </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1.5">Confirm Password</label>
+          <input v-model="passwordConfirmation" type="password" required class="input" placeholder="Re-enter password">
+        </div>
         <div v-if="error" class="p-3 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm">{{ error }}</div>
         <button type="submit" :disabled="loading" class="btn btn-primary w-full text-base py-3 rounded-xl shadow-lg shadow-violet-200 disabled:opacity-60">
           {{ loading ? 'Creating account...' : 'Create Account' }}
@@ -42,6 +46,7 @@ const router = useRouter()
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const passwordConfirmation = ref('')
 const error = ref('')
 const loading = ref(false)
 
@@ -49,7 +54,7 @@ async function register() {
   loading.value = true
   error.value = ''
   try {
-    const res = await api.post('/auth/register', { name: name.value, email: email.value, password: password.value })
+    const res = await api.post('/auth/register', { name: name.value, email: email.value, password: password.value, password_confirmation: passwordConfirmation.value })
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
     router.push('/')
