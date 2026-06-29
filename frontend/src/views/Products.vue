@@ -1,12 +1,12 @@
 <template>
   <div class="bg-slate-50 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <div class="flex items-end justify-between mb-3">
+      <div class="flex items-end justify-between mb-8">
         <div>
-          <h1 class="text-4xl font-extrabold text-slate-900">All Products</h1>
-          <p class="mt-1 text-base text-slate-500">{{ loading ? 'Loading...' : products.length + ' products found' }}</p>
+<h1 class="text-3xl font-extrabold text-slate-900">All Products</h1>
+        <p class="mt-1 text-sm text-slate-500">{{ loading ? 'Loading...' : products.length + ' products found' }}</p>
         </div>
-        <div class="hidden sm:flex items-center gap-2 text-base text-slate-600 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm">
+        <div class="hidden sm:flex items-center gap-2 text-sm text-slate-600 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm">
           <span class="font-medium">Sort:</span>
           <select v-model="sort" @change="fetchProducts" class="bg-transparent outline-none font-semibold text-slate-800">
             <option value="latest">Latest</option>
@@ -27,10 +27,10 @@
           </div>
 
           <div class="card p-5">
-            <h3 class="font-bold text-slate-800 mb-4 text-base uppercase tracking-wider">Categories</h3>
+            <h3 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wider">Categories</h3>
             <div class="space-y-1">
-              <button @click="categoryId = null; fetchProducts()" :class="{'bg-violet-50 text-violet-700 font-bold': !categoryId}" class="w-full text-left px-4 py-2.5 rounded-lg text-base text-slate-600 hover:bg-slate-50 transition">All Categories</button>
-              <button v-for="cat in categories" :key="cat.id" @click="categoryId = cat.id; fetchProducts()" :class="{'bg-violet-50 text-violet-700 font-bold': categoryId === cat.id}" class="w-full text-left px-4 py-2.5 rounded-lg text-base text-slate-600 hover:bg-slate-50 transition">{{ cat.name }}</button>
+              <button @click="categoryId = null; fetchProducts()" :class="{'bg-violet-50 text-violet-700 font-bold': !categoryId}" class="w-full text-left px-4 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition">All Categories</button>
+              <button v-for="cat in categories" :key="cat.id" @click="categoryId = cat.id; fetchProducts()" :class="{'bg-violet-50 text-violet-700 font-bold': categoryId === cat.id}" class="w-full text-left px-4 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition">{{ cat.name }}</button>
             </div>
           </div>
         </aside>
@@ -44,8 +44,8 @@
           </div>
           <div v-else class="text-center py-24 text-slate-500">
             <p class="text-5xl mb-4">🔍</p>
-            <p class="font-semibold text-xl">No products found</p>
-            <p class="text-base mt-1">Try adjusting your search or filters.</p>
+<p class="font-semibold text-lg">No products found</p>
+          <p class="text-sm mt-1">Try adjusting your search or filters.</p>
           </div>
         </div>
       </div>
@@ -86,13 +86,10 @@ async function fetchProducts() {
 }
 
 onMounted(async () => {
-  console.log('Products onMounted start')
   try {
     const res = await api.get('/categories')
     categories.value = res.data
-    console.log('categories loaded', categories.value.length)
   } catch (e) { console.error('categories error', e) }
   await fetchProducts()
-  console.log('fetchProducts done, products', products.value.length)
 })
 </script>

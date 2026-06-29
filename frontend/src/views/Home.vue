@@ -9,37 +9,8 @@
         <div class="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-fuchsia-500/15 blur-[130px]"></div>
       </div>
 
-      <!-- JBL Brand block -->
-      <div class="absolute left-6 top-8 z-20 hidden sm:flex items-start gap-3 text-white">
-        <div class="rounded-md bg-[#2f0a1e] px-3 py-2 shadow-lg">
-          <div class="text-lg font-black tracking-wide">JBL</div>
-        </div>
-        <div class="pt-1 text-[10px] font-semibold uppercase tracking-widest text-white/70">by HARMAN</div>
-      </div>
-
-      <!-- IP68 Badge -->
-      <div class="absolute right-6 top-10 z-20 hidden sm:block text-center text-white">
-        <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-white/30 bg-white/5 backdrop-blur-md shadow-[0_0_0_1px_rgba(255,255,255,0.15)]">
-          <div class="text-4xl font-black tracking-tighter">IP68</div>
-        </div>
-        <div class="mt-2 space-y-0.5 text-[11px] font-bold uppercase tracking-wider text-white/80">
-          <div>Waterproof</div>
-          <div>Dustproof</div>
-          <div>Built To</div>
-          <div>Withstand It All</div>
-        </div>
-      </div>
-
-      <!-- Big BOOMBOX 4 watermark -->
-      <div class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20" aria-hidden="true">
-        <div class="text-center leading-none">
-          <div class="text-[7rem] sm:text-[10rem] font-black tracking-tight text-white/90">BOOMBOX</div>
-          <div class="-mt-2 text-[10rem] sm:text-[14rem] font-black text-white/90">4</div>
-        </div>
-      </div>
-
       <!-- Controls -->
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-24 sm:py-32 text-center text-white">
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-24 sm:py-28 text-center text-white">
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
           Discover Quality Products
         </h1>
@@ -81,13 +52,13 @@
     </section>
 
     <!-- Shop by Category -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
       <div class="section-header">
         <div>
           <h2>Shop by Category</h2>
           <p class="section-subtitle">Find exactly what you need by browsing our curated collections.</p>
         </div>
-        <router-link to="/products" class="text-base font-semibold text-violet-600 hover:text-violet-700">View all →</router-link>
+        <router-link to="/products" class="btn btn-ghost text-sm font-semibold rounded-full px-3 py-1">View all →</router-link>
       </div>
       <div v-if="loading" class="grid grid-cols-2 md:grid-cols-4 gap-5">
         <div v-for="n in 4" :key="n" class="skeleton h-32"></div>
@@ -95,7 +66,7 @@
       <div v-else class="grid grid-cols-2 md:grid-cols-4 gap-5">
         <div v-for="cat in categories" :key="cat.id" class="group card p-6 text-center hover:shadow-lg hover:-translate-y-1 transition cursor-pointer">
           <div class="w-16 h-16 mx-auto rounded-full bg-violet-50 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:bg-violet-100 transition">
-            📁
+            {{ categoryIcon(cat.name) }}
           </div>
           <h3 class="font-bold text-slate-800 text-base">{{ cat.name }}</h3>
         </div>
@@ -103,14 +74,14 @@
     </section>
 
     <!-- Latest Products -->
-    <section id="products" class="bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <section id="products" class="bg-slate-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
         <div class="section-header">
           <div>
             <h2>Latest Products</h2>
             <p class="section-subtitle">Handpicked new arrivals just for you.</p>
           </div>
-          <router-link to="/products" class="text-base font-semibold text-violet-600 hover:text-violet-700">View all →</router-link>
+          <router-link to="/products" class="btn btn-ghost text-sm font-semibold rounded-full px-3 py-1">View all →</router-link>
         </div>
         <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div v-for="n in 8" :key="n" class="skeleton h-96"></div>
@@ -132,6 +103,20 @@ import ProductCard from '../components/ProductCard.vue'
 const categories = ref([])
 const latest = ref([])
 const loading = ref(true)
+
+function categoryIcon(name) {
+  const map = {
+    Electronics: '💻',
+    Clothing: '👕',
+    'Home & Garden': '🏠',
+    Sports: '⚽',
+    Books: '📚',
+    Toys: '🧸',
+    Beauty: '💄',
+    Automotive: '🚗',
+  }
+  return map[name] || '📦'
+}
 
 onMounted(async () => {
   try {
