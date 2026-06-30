@@ -8,7 +8,6 @@
         <nav class="hidden md:flex items-center gap-6 text-base font-medium text-slate-600">
           <router-link to="/" class="hover:text-violet-600 transition" active-class="text-violet-600 !font-bold">Home</router-link>
           <router-link to="/products" class="hover:text-violet-600 transition" active-class="text-violet-600 !font-bold">Products</router-link>
-          <router-link to="/products" class="hover:text-violet-600 transition">Categories</router-link>
         </nav>
       </div>
 

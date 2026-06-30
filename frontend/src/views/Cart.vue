@@ -66,22 +66,53 @@ const total = ref(0)
 const loading = ref(true)
 
 async function loadCart() {
-  const token = localStorage.getItem('token')
-  if (token) {
-    const res = await api.get('/cart')
-    cartItems.value = res.data.items
-  } else {
-    cartItems.value = JSON.parse(localStorage.getItem('cart') || '[]').map((item, idx) => ({
-      id: 'local_' + idx,
-      product_id: item.product_id,
-      quantity: item.quantity,
-      product: { id: item.product_id, name: item.name, price: item.price, image: item.image },
-    }))
+  loading.value = true
+  cartItems.value = []
+  let syncError = null
+
+  try {
+    const token = localStorage.getItem('token')
+    const localCart = JSON.parse(localStorage.getItem('cart') || '[]')
+
+    if (token && localCart.length) {
+      try {
+        await Promise.all(
+          localCart.map((item) =>
+            api.post(
+              '/cart',
+              { product_id: item.product_id, quantity: item.quantity },
+              { validateStatus: () => true }
+            )
+          )
+        )
+        localStorage.setItem('cart', '[]')
+      } catch (e) {
+        syncError = e
+      }
+    }
+
+    if (token) {
+      const res = await api.get('/cart')
+      const data = res.data || {}
+      cartItems.value = Array.isArray(data.items) ? data.items : []
+    } else if (localCart.length) {
+      cartItems.value = localCart.map((item, idx) => ({
+        id: 'local_' + idx,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        product: { id: item.product_id, name: item.name, price: item.price, image: item.image },
+      }))
+    }
+  } catch (e) {
+    console.error('Cart load failed:', e)
   }
-  total.value = cartItems.value.reduce((sum, i) => sum + (parseFloat(i.product?.price || 0) * i.quantity), 0)
+
+  total.value = cartItems.value.reduce(
+    (sum, i) => sum + (parseFloat(i.product?.price || 0) * i.quantity),
+    0
+  )
   loading.value = false
 }
-
 function updateQty(item, delta) {
   const newQty = item.quantity + delta
   if (newQty < 1) return

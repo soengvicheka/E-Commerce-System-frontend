@@ -35,7 +35,7 @@
                     <p class="text-xs text-slate-500">Qty: {{ item.quantity }}</p>
                   </div>
                 </div>
-                <span class="font-extrabold text-slate-900">${{ (parseFloat(item.price) * item.quantity).toFixed(2) }}</span>
+                <span class="font-extrabold text-slate-900">${{ (parseFloat(item.price || 0) * item.quantity).toFixed(2) }}</span>
               </div>
               <div class="border-t border-slate-100 pt-3 flex justify-between items-center">
                 <span class="font-bold text-slate-800">Total</span>
@@ -46,7 +46,17 @@
         </div>
 
         <form @submit.prevent="placeOrder" class="card p-6 space-y-5">
-          <h3 class="font-extrabold text-slate-900 text-lg">Shipping & Payment</h3>
+          <h3 class="font-extrabold text-slate-900 text-lg">Buyer Details</h3>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
+            <input v-model="customerName" required placeholder="Full name" class="input" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Phone Number</label>
+            <input v-model="phone" required placeholder="+1 234 567 890" class="input" />
+          </div>
 
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Shipping Address</label>
@@ -56,11 +66,11 @@
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Payment Method</label>
             <div class="grid grid-cols-2 gap-3">
-              <button type="button" @click="paymentMethod = 'cash'" :class="paymentMethod === 'cash' ? 'ring-2 ring-violet-500 bg-violet-50 border-violet-200' : 'border-slate-200'" class="border rounded-xl p-4 flex flex-col items-center gap-2 transition hover:border-violet-300 bg-white">
+              <button type="button" @click.prevent="paymentMethod = 'cash'" :class="paymentMethod === 'cash' ? 'ring-2 ring-violet-500 bg-violet-50 border-violet-200' : 'border-slate-200'" class="border rounded-xl p-4 flex flex-col items-center gap-2 transition hover:border-violet-300 bg-white">
                 <span class="text-2xl">💵</span>
                 <span class="text-sm font-bold text-slate-800">Cash on Delivery</span>
               </button>
-              <button type="button" @click="paymentMethod = 'card'" :class="paymentMethod === 'card' ? 'ring-2 ring-violet-500 bg-violet-50 border-violet-200' : 'border-slate-200'" class="border rounded-xl p-4 flex flex-col items-center gap-2 transition hover:border-violet-300 bg-white">
+              <button type="button" @click.prevent="paymentMethod = 'card'" :class="paymentMethod === 'card' ? 'ring-2 ring-violet-500 bg-violet-50 border-violet-200' : 'border-slate-200'" class="border rounded-xl p-4 flex flex-col items-center gap-2 transition hover:border-violet-300 bg-white">
                 <span class="text-2xl">💳</span>
                 <span class="text-sm font-bold text-slate-800">Card Payment</span>
               </button>
@@ -73,7 +83,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary w-full text-base py-3 rounded-xl shadow-lg shadow-violet-200">
-            Place Order
+            Buy Now
           </button>
         </form>
       </div>
@@ -88,22 +98,31 @@ import { api } from '../services/api'
 const cart = ref([])
 const loading = ref(true)
 const isLoggedIn = !!localStorage.getItem('token')
+
+const customerName = ref('')
+const phone = ref('')
 const shippingAddress = ref('')
-const paymentMethod = ref('')
+const paymentMethod = ref('cash')
 const notes = ref('')
 
-const orderTotal = computed(() => cart.value.reduce((sum, i) => sum + parseFloat(i.price) * i.quantity, 0))
+const orderTotal = computed(() => cart.value.reduce((sum, i) => sum + (parseFloat(i.price) || 0) * (parseInt(i.quantity, 10) || 0), 0))
 
 async function loadCart() {
   loading.value = true
-  const res = await api.get('/cart')
-  cart.value = res.data.items
+  try {
+    const res = await api.get('/cart')
+    cart.value = res.data.items
+  } catch (e) {
+    cart.value = []
+  }
   loading.value = false
 }
 
 async function placeOrder() {
   try {
     const res = await api.post('/orders', {
+      customer_name: customerName.value,
+      phone: phone.value,
       shipping_address: shippingAddress.value,
       payment_method: paymentMethod.value,
       notes: notes.value,
