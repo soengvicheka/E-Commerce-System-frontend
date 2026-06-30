@@ -11,6 +11,7 @@ import Orders from '../views/Orders.vue'
 import Profile from '../views/Profile.vue'
 import Logout from '../views/Logout.vue'
 import NotFound from '../views/NotFound.vue'
+import GoogleAuthCallback from '../views/GoogleAuthCallback.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -21,6 +22,7 @@ const routes = [
   { path: '/login', name: 'Login', component: Login, meta: { guest: true } },
   { path: '/register', name: 'Register', component: Register, meta: { guest: true } },
   { path: '/logout', name: 'Logout', component: Logout },
+  { path: '/auth/google/callback', name: 'GoogleAuthCallback', component: GoogleAuthCallback },
   { path: '/wishlist', name: 'Wishlist', component: Wishlist, meta: { requiresAuth: true } },
   { path: '/orders', name: 'Orders', component: Orders, meta: { requiresAuth: true } },
   { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true } },

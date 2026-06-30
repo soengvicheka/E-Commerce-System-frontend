@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+// In dev  : Vite proxy handles /api/v1 → http://localhost:8000/api/v1
+// In prod  : set both in frontend .env
 const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
-const STORAGE_BASE = 'http://localhost:8000/storage/'
+const STORAGE_BASE = import.meta.env.VITE_STORAGE_BASE || 'http://localhost:8000/storage/'
 
 const api = axios.create({
   baseURL: API_BASE,
